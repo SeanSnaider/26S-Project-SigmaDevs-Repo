@@ -8,7 +8,7 @@ st.set_page_config(layout='wide')
 
 SideBarLinks()
 
-st.title('System Admin Home Page')
+st.title('Chief Information Officer Home Page')
 st.write('### What would you like to do today?')
 
 if st.button('Update ML Models',
