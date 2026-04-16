@@ -15,11 +15,12 @@ def about_page_nav():
     st.sidebar.page_link("pages/30_About.py", label="About", icon="🧠")
 
 
-# ---- Role: pol_strat_advisor ------------------------------------------------
 
-def pol_strat_home_nav():
+# ---- Role: Quant_Trader ------------------------------------------------
+
+def quant_trader_home_nav():
     st.sidebar.page_link(
-        "pages/00_Pol_Strat_Home.py", label="Political Strategist Home", icon="👤"
+        "pages/00_Quant_Trader_Home.py", label="Quantitative Trader Home", icon="👤"
     )
 
 
@@ -98,12 +99,12 @@ def SideBarLinks(show_home=False):
 
     if st.session_state["authenticated"]:
 
-        if st.session_state["role"] == "pol_strat_advisor":
-            pol_strat_home_nav()
+        if st.session_state["role"] == "quant_trader":
+            quant_trader_home_nav()
             world_bank_viz_nav()
             map_demo_nav()
 
-        if st.session_state["role"] == "usaid_worker":
+        if st.session_state["role"] == "data_analyst":
             usaid_worker_home_nav()
             ngo_directory_nav()
             add_ngo_nav()
@@ -111,9 +112,13 @@ def SideBarLinks(show_home=False):
             api_test_nav()
             classification_nav()
 
-        if st.session_state["role"] == "administrator":
+        if st.session_state["role"] == "CIO":
             admin_home_nav()
             ml_model_mgmt_nav()
+        if st.session_state["role"] == "beginner_user":
+            admin_home_nav()
+            ml_model_mgmt_nav()
+
 
     # About link appears at the bottom for all roles
     about_page_nav()
