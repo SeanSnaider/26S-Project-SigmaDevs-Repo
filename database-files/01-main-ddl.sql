@@ -36,7 +36,7 @@ CREATE TABLE if not exists Action (
 
 CREATE TABLE if not exists Role (
     name VARCHAR(50),
-    RoleID INT PRIMARY KEY,
+    RoleID INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_role
                           FOREIGN KEY (user_id) REFERENCES Users(userID)
@@ -50,7 +50,7 @@ CREATE TABLE if not exists Permission (
     permission_id INT PRIMARY KEY,
     role_id INT NOT NULL,
     CONSTRAINT role_permission
-                          FOREIGN KEY (role_id) REFERENCES Role(RoleID)
+        FOREIGN KEY (role_id) REFERENCES Role(RoleID)
 );
 
 CREATE TABLE if not exists Customer (
