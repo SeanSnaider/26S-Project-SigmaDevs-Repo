@@ -4,9 +4,17 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
+
 from backend.users.users_routes import users
 from backend.roles.roles_routes import roles
 from backend.actions.actions_routes import actions
+from backend.simple.simple_routes import simple_routes
+from backend.portiq.asset_routes import asset_routes
+from backend.portiq.benchmark_routes import benchmark_routes
+from backend.portiq.portfolio_routes import portfolio_routes
+from backend.portiq.riskmetric_routes import riskmetric_routes
+from backend.portiq.strategy_routes import strategy_routes
+from backend.portiq.trade_routes import trade_routes
 
 
 def create_app():
@@ -39,5 +47,6 @@ def create_app():
     app.register_blueprint(users, url_prefix="/user")
     app.register_blueprint(roles, url_prefix="/role")
     app.register_blueprint(actions, url_prefix="/action")
-
+    app.register_blueprint(simple_routes)
+    app.register_blueprint(asset_routes, url_prefix="/assets")
     return app

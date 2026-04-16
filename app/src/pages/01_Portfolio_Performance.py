@@ -8,13 +8,14 @@ import numpy as np
 import plotly.express as px
 from modules.nav import SideBarLinks
 
+
 st.set_page_config(layout='wide')
 
 # Call the SideBarLinks from the nav module in the modules directory
 SideBarLinks()
 
 # set the header of the page
-st.header('World Bank Data')
+st.header('Portfolio Performance')
 
 # You can access the session state to make a more customized/personalized app experience
 st.write(f"### Hi, {st.session_state['first_name']}.")
@@ -40,3 +41,5 @@ with st.echo(code_location='above'):
                                 slim_countries['incomeLevel'],  
                                 margins = False) 
     st.table(data_crosstab)
+
+
