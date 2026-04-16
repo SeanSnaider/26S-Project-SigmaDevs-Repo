@@ -5,8 +5,12 @@ import logging
 
 from backend.db_connection import init_app as init_db
 from backend.simple.simple_routes import simple_routes
-from backend.ngos.ngo_routes import ngos
-
+from backend.portiq.asset_routes import asset_routes
+from backend.portiq.benchmark_routes import benchmark_routes
+from backend.portiq.portfolio_routes import portfolio_routes
+from backend.portiq.riskmetric_routes import riskmetric_routes
+from backend.portiq.strategy_routes import strategy_routes
+from backend.portiq.trade_routes import trade_routes
 
 def create_app():
     app = Flask(__name__)
@@ -36,6 +40,5 @@ def create_app():
     # and give a url prefix to each.
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
-    app.register_blueprint(ngos, url_prefix="/ngo")
-
+    app.register_blueprint(asset_routes, url_prefix="/assets")
     return app
