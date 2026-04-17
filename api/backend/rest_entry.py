@@ -41,4 +41,10 @@ def create_app():
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
     app.register_blueprint(asset_routes, url_prefix="/assets")
+    app.register_blueprint(benchmark_routes, url_prefix="/benchmarks")
+    app.register_blueprint(portfolio_routes, url_prefix="/portfolios")
+    app.register_blueprint(riskmetric_routes, url_prefix="/riskmetrics")
+    app.register_blueprint(strategy_routes, url_prefix="/strategies")
+    app.register_blueprint(trade_routes, url_prefix="/trades")
+    
     return app
