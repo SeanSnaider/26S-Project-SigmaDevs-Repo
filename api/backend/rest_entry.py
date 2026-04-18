@@ -41,4 +41,5 @@ def create_app():
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
     app.register_blueprint(asset_routes, url_prefix="/assets")
+    app.register_blueprint(portfolio_routes, url_prefix="/portfolio")
     return app
