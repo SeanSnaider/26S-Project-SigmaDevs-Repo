@@ -58,11 +58,10 @@ def create_trade():
         query = """
                 INSERT INTO Trade
                 (trade_type, trade_date, quantity, price, trade_id, trade_asset)
-                VALUES (%s,%s,%s,%s,%s,%s)
+                VALUES (%s,NOW(),%s,%s,%s,%s)
                 """
         cursor.execute(query, (
                     data["trade_type"],
-                    data["trade_date"],
                     data["quantity"],
                     data["price"],
                     data["trade_id"],
@@ -87,7 +86,7 @@ def update_trade(trade_id):
         query = """
                 UPDATE Trade
                 SET trade_type=%s,
-                trade_date=%s,
+                trade_date=NOW(),
                 quantity=%s,
                 price=%s,
                 trade_asset=%s
@@ -95,7 +94,6 @@ def update_trade(trade_id):
                 """
         cursor.execute(query, (
                     data["trade_type"],
-                    data["trade_date"],
                     data["quantity"],
                     data["price"],
                     data["trade_asset"],
