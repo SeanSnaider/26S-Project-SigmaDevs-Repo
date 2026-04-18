@@ -1,45 +1,68 @@
 import logging
 logger = logging.getLogger(__name__)
-import pandas as pd
-import streamlit as st
-import world_bank_data as wb
-import matplotlib.pyplot as plt
-import numpy as np
-import plotly.express as px
-from modules.nav import SideBarLinks
 
+import streamlit as st
+import pandas as pd
+import requests
+from modules.nav import SideBarLinks
 
 st.set_page_config(layout='wide')
 
-# Call the SideBarLinks from the nav module in the modules directory
 SideBarLinks()
 
-# set the header of the page
-st.header('Portfolio Performance')
+st.title("Portfolio Performance")
+st.subheader("Monitor portfolio value and profit & loss")
 
-# You can access the session state to make a more customized/personalized app experience
 st.write(f"### Hi, {st.session_state['first_name']}.")
 
-# get the countries from the world bank data
-with st.echo(code_location='above'):
-    countries:pd.DataFrame = wb.get_countries()
-   
-    st.dataframe(countries)
+col1, col2 = st.columns([1,3])
 
-# the with statment shows the code for this block above it 
-with st.echo(code_location='above'):
-    arr = np.random.normal(1, 1, size=100)
-    test_plot, ax = plt.subplots()
-    ax.hist(arr, bins=20)
+with col1: 
+    portfolio_id = st.number_input(
+        "Portfolio ID",
+        min_value = 1,
+        value = 101,
+        step=1
+    )
+with col2: 
+    st.write("")
+    st.write("")
+    load = st.button(
+        "Load Portfolio Data",
+        type = "primary",
+        use_container_width = True
+    )
 
-    st.pyplot(test_plot)
+if load:
+    try:
+        response = requests.get(f"http://web-api:4000/portfolios/{portfolio_id}")
+        if response.status_code != 200:
+            st.error("Portfolio not found/API Error.")
+        else:
+            data = response.json()
+            st.divider()
+            col1,col2 = st.columns(2)
+            col1.metric("Portfolio ID", data['portfolio_id'])
+            col2.markdown("**Portfolio Name:**")
+            col2.markdown(f"{data['portfolio_name']}")
+            col3,col4=st.columns(2)
+            col3.metric("Total Value", f"${data['total_value']:,.2f}")
+            col4.markdown("**Confidence:**")
+            col4.markdown(f"{data['confidence']}")
+            col5, col6 = st.columns(2)
+            col5.metric("Daily P&L",f"${data['total_daily_PNL']:,.2f}")
+            col6.metric("Cumulative P&L", f"${data['total_cumulative_PNL']:,.2f}")
+
+            st.divider()
+            st.subheader("Portfolio Details")
+
+            df= pd.DataFrame([data])
+            st.dataframe(df, use_container_width=True, hide_index=True)
+            st.divider()
 
 
-with st.echo(code_location='above'):
-    slim_countries = countries[countries['incomeLevel'] != 'Aggregates']
-    data_crosstab = pd.crosstab(slim_countries['region'], 
-                                slim_countries['incomeLevel'],  
-                                margins = False) 
-    st.table(data_crosstab)
 
 
+    except Exception as e:
+        logger.error(f"Error loading portfolio: {e}")
+        st.error("Failed to load portfolio data.")
