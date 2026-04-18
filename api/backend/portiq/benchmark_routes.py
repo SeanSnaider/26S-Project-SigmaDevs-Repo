@@ -42,7 +42,7 @@ def get_benchmark(benchmark_id):
                 where benchmark_id = %s
                 """
         cursor.execute(query, (benchmark_id,))
-        benchmark = cursor.fetchhone()
+        benchmark = cursor.fetchone()
         if not benchmark:
             return jsonify({"error": "Benchmark not found"}), 404
         return jsonify(benchmark), 200

@@ -29,7 +29,7 @@ def get_all_assets():
 
 # GET /assets/<asset_id>
 # Return one asset
-@asset_routes.route("/<int:asset_id>", method=["GET"])
+@asset_routes.route("/<int:asset_id>", methods=["GET"])
 def get_asset(asset_id):
     cursor = get_db().cursor(dictionary=True)
     try:

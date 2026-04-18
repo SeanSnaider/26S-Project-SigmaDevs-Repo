@@ -49,7 +49,7 @@ def get_portfolio(portfolio_id):
                 GROUP BY p.portfolio_id, p.portfolio_name, p.total_value, p.confidence, p.currency
                 """
         cursor.execute(query, (portfolio_id,))
-        portfolio = cursor.fetchhone()
+        portfolio = cursor.fetchone()
         if not portfolio:
             return jsonify({"error": "Portfolio not found"}), 404
         return jsonify(portfolio), 200

@@ -101,9 +101,22 @@ def SideBarLinks(show_home=False):
 
         if st.session_state["role"] == "quant_trader":
             quant_trader_home_nav()
-            world_bank_viz_nav()
-            map_demo_nav()
-
+            st.sidebar.page_link(
+                "pages/01_Portfolio_Performance.py",
+                label="Portfolio Performance"
+            )
+            st.sidebar.page_link(
+                "pages/02_Strategy_Benchmark.py",
+                label="Strategy vs Benchmark"
+            )
+            st.sidebar.page_link(
+                "pages/03_Risk_Analysis.py",
+                label="Risk Analysis"
+            )
+            st.sidebar.page_link(
+                "pages/04_Trading_Logs.py",
+                label="Trading Logs"
+            )
         if st.session_state["role"] == "data_analyst":
             usaid_worker_home_nav()
             ngo_directory_nav()

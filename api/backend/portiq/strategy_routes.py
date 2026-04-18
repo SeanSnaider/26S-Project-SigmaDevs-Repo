@@ -40,12 +40,11 @@ def create_strategy():
         query = """
                 Insert INTO Strategy
                 (strategy_name, strategy_type, created_at, parameter, status, strategy_id, trade_strat, port_strat)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                VALUES (%s,%s,NOW(),%s,%s,%s,%s,%s)
                 """
         cursor.execute(query, (
             data['strategy_name'],
             data['strategy_type'],
-            data['created_at'],
             data['parameter'],
             data['status'],
             data['strategy_id'],
@@ -53,7 +52,7 @@ def create_strategy():
             data['port_strat']
         ))
         get_db().commit()
-        return jsonify({"message":"Strategy created"}), 201
+        return jsonify({"message":"Strategy created"}), 200
     except Error as e:
         current_app.logger.error(f"Database error in create_strategy: {e}")
         return jsonify({"error": str(e)}), 500
@@ -73,7 +72,7 @@ def get_strategy(strategy_id):
                 from Strategy
                 where strategy_id = %s
                 """
-        cursor.execute(query)
+        cursor.execute(query, (strategy_id,))
         result = cursor.fetchone()
         if not result:
             return jsonify({"error": "Strategy Not Found"}), 404
@@ -118,7 +117,7 @@ def update_strategy(strategy_id):
 def get_strategy_performance(strategy_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('GET /strategies/{strategy_id}/performance')
+        current_app.logger.info(f'GET /strategies/{strategy_id}/performance')
 
         query = """
                 SELECT *
@@ -143,7 +142,7 @@ def get_strategy_performance(strategy_id):
 def get_strategy_benchmark(strategy_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('GET /strategies/{strategy_id}/benchmark')
+        current_app.logger.info(f'GET /strategies/{strategy_id}/benchmark')
 
         query = """
                 SELECT *

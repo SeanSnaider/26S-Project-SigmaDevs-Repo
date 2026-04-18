@@ -12,7 +12,7 @@ trade_routes = Blueprint("trade_routes", __name__)
 def get_all_trades():
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('GET /trades')
+        current_app.logger.info(f'GET /trades')
         query = """
                 SELECT *
                 from Trade
@@ -28,11 +28,11 @@ def get_all_trades():
 
 # GET /trades/<id>
 # Return all trades
-@trade_routes.route("/<int: trade_id>", methods=["GET"])
+@trade_routes.route("/<int:trade_id>", methods=["GET"])
 def get_trade(trade_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('GET /trades/{trade_id}')
+        current_app.logger.info(f'GET /trades/{trade_id}')
         query = """
                 SELECT *
                 from Trade
@@ -49,11 +49,11 @@ def get_trade(trade_id):
 
 # POST /trades/<id>
 # Update a trade
-@trade_routes.route("/<int: trade_id>", methods=["POST"])
+@trade_routes.route("/", methods=["POST"])
 def create_trade():
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('POST /trades')
+        current_app.logger.info(f'POST /trades')
         data = request.get_json()
         query = """
                 INSERT INTO Trade
@@ -78,11 +78,11 @@ def create_trade():
 
 # PUT /trades
 # Create a new trade
-@trade_routes.route("/<int: trade_id>", methods=["PUT"])
+@trade_routes.route("/<int:trade_id>", methods=["PUT"])
 def update_trade(trade_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('PUT /trades/{trade_id}')
+        current_app.logger.info(f'PUT /trades/{trade_id}')
         data = request.get_json()
         query = """
                 UPDATE Trade
@@ -112,12 +112,11 @@ def update_trade(trade_id):
 
 # DELETE /trades/<id>
 # Delete a trade
-@trade_routes.route("/<int: trade_id>", methods=["DELETE"])
+@trade_routes.route("/<int:trade_id>", methods=["DELETE"])
 def delete_trade(trade_id):
     cursor = get_db().cursor(dictionary=True)
     try:
-        current_app.logger.info('DELETE /trades/{trade_id}')
-        data = request.get_json()
+        current_app.logger.info(f'DELETE /trades/{trade_id}')
         query = """
                DELETE from Trade
                where trade_id = %s
