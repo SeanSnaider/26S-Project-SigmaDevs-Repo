@@ -15,7 +15,7 @@ def get_recent_load():
         cursor.execute(
             """SELECT u.username, a.action_type, a.date
                FROM Action AS a
-               JOIN users AS u ON u.userID = a.user_id
+               JOIN Users AS u ON u.userID = a.user_id
                WHERE a.action_type LIKE 'LOAD_%'
                ORDER BY a.date DESC
                LIMIT 1""")
@@ -42,7 +42,7 @@ def get_recent_deployment():
         cursor.execute(
             """SELECT u.username, a.action_type, a.date
                FROM Action AS a
-               JOIN users AS u ON u.userID = a.user_id
+               JOIN Users AS u ON u.userID = a.user_id
                WHERE a.action_type LIKE 'DEPLOYED_%'
                ORDER BY a.date DESC
                LIMIT 1""")

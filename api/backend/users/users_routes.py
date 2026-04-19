@@ -14,8 +14,8 @@ def get_all_users_role():
     cursor = get_db().cursor(dictionary=True)
     try:
         cursor.execute(
-            """SELECT u.username, r.name
-               FROM users AS u
+            """SELECT u.username as 'usernames', r.name as 'role names'
+               FROM Users AS u
                JOIN Role AS r ON u.userID = r.user_id""")
         user_roles_list = cursor.fetchall()
 
@@ -44,8 +44,9 @@ def update_users():
         cursor.execute(
             """UPDATE Users
                SET passwordHash = AES_ENCRYPT(passwordHash, %s),
-                   birth_date = AES_ENCRYPT(birth_date, %s)""",
-            (key, key))
+                   is_encrypted = true
+               WHERE is_encrypted = false""",
+            (key,))
 
         get_db().commit()
         return jsonify({"message": "Users encrypted successfully"}), 200
@@ -66,10 +67,10 @@ def get_decrypt_user(user_id):
         key = os.getenv("ENCRYPTION_KEY")
         
         cursor.execute(
-            """SELECT AES_DECRYPT(users.passwordHash, %s) AS passwordHash,
-                      AES_DECRYPT(users.birth_date, %s) AS birth_date
-               FROM users
-               WHERE users.userID = %s""",
+            """SELECT AES_DECRYPT(Users.passwordHash, %s) AS passwordHash,
+                      AES_DECRYPT(Users.birth_date, %s) AS birth_date
+               FROM Users
+               WHERE Users.userID = %s""",
             (key, key, user_id))
         user = cursor.fetchone()
 
@@ -89,8 +90,8 @@ def delete_user(user_id):
     cursor = get_db().cursor(dictionary=True)
     try:
         cursor.execute(
-            """DELETE FROM users
-               WHERE users.userID = %s""",
+            """DELETE FROM Users
+               WHERE Users.userID = %s""",
             (user_id,))
 
         if cursor.rowcount == 0:

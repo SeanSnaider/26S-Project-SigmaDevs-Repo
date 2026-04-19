@@ -12,7 +12,7 @@ def get_role_perms(role_id):
     cursor = get_db().cursor(dictionary=True)
     try:
         cursor.execute(
-            """SELECT r.RoleID, p.Can_Read, p.Can_Write, p.Can_CREATE, p.table_id
+            """SELECT r.RoleID, r.name, p.Can_Read, p.Can_Write, p.Can_CREATE, p.table_id
                FROM Role AS r
                JOIN Permission AS p ON r.RoleID = p.role_id
                WHERE r.RoleID = %s""",
