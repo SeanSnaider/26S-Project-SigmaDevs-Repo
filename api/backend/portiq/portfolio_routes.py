@@ -254,13 +254,13 @@ portfolio_routes = Blueprint("portfolio_routes", __name__)
 def GetAllPortifolios(user_id):
   cursor = get_db().cursor(dictionary=True)
   try:
-    current_app.logger.info(f"GET portifolios for user {user_id}")
+    current_app.logger.info(f"GET portifolios for user")
     cursor.execute("SELECT * FROM Portfolio WHERE user_id = %s",(user_id,))
     portifolios = cursor.fetchall()
-    current_app.logger.info(f"Got {len(portifolios)} portifolios for user {user_id}")
+    current_app.logger.info(f"Got {len(portifolios)} portifolios for user")
     return jsonify(portifolios), 200
   except Error as e:
-    current_app.logger.error(f"The error {e} occured while getting all portifolios for user {user_id}")
+    current_app.logger.error(f"An error {e} occured while getting all portifolios for user")
     return jsonify(str(e)), 500
   finally:
     cursor.close()
@@ -271,7 +271,7 @@ def GetAllPortifolios(user_id):
 def GetPortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
-    current_app.logger.info(f"GET portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.info(f"Trying GET portifolio")
     cursor.execute(
       "SELECT * FROM Portfolio WHERE user_id = %s AND portfolio_id = %s",
       (user_id, portifolio_id),
@@ -284,7 +284,7 @@ def GetPortifolio(user_id, portifolio_id):
     current_app.logger.info("Got the portifolio")
     return jsonify(portifolio), 200
   except Error as e:
-    current_app.logger.error(f"The error {e} occured while getting portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.error(f"The error {e} occured while getting portifolio")
     return jsonify(str(e)), 500
   finally:
     cursor.close()
@@ -295,7 +295,7 @@ def GetPortifolio(user_id, portifolio_id):
 def CreatePortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
-    current_app.logger.info(f"POST portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.info(f"Trying POST portifolio")
     data = request.get_json()
 
     required_fields = ["portfolio_name","created_at","total_value","confidence","currency"]
@@ -318,10 +318,10 @@ def CreatePortifolio(user_id, portifolio_id):
     ))
     get_db().commit()
 
-    current_app.logger.info(f"Created portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.info(f"Created portifolio successfully")
     return jsonify({"message": "Portfolio created successfully", "portfolio_id": portifolio_id}), 201
   except Error as e:
-    current_app.logger.error(f"The error {e} occured while creating portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.error(f"The error {e} occured while creating portifolio")
     return jsonify(str(e)), 500
   finally:
     cursor.close()
@@ -354,10 +354,10 @@ def UpdatePortifolio(user_id, portifolio_id):
     cursor.execute(query,params)
     get_db().commit()
 
-    current_app.logger.info(f"Updated portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.info(f"Trying Updated portifolio")
     return jsonify({"message": "Portfolio updated successfully"}), 200
   except Error as e:
-    current_app.logger.error(f"The error {e} occured while updating portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.error(f"The error {e} occured while updating portifolio")
     return jsonify(str(e)), 500
   finally:
     cursor.close()
@@ -368,7 +368,7 @@ def UpdatePortifolio(user_id, portifolio_id):
 def DeletePortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
-    current_app.logger.info(f"DELETE portifolio {portifolio_id} for user {user_id}")
+    current_app.logger.info(f"Trying DELETE portifolio")
 
     cursor.execute(
       "SELECT portfolio_id FROM Portfolio WHERE user_id = %s AND portfolio_id = %s",

@@ -6,11 +6,15 @@ import logging
 from backend.db_connection import init_app as init_db
 from backend.simple.simple_routes import simple_routes
 from backend.portiq.asset_routes import asset_routes
+from backend.portiq.ratings_routes import analystrating_routes
 from backend.portiq.benchmark_routes import benchmark_routes
+from backend.portiq.chatsession_routes import chatsession_routes
+from backend.portiq.dailysummary_routes import dailysummary_routes
 from backend.portiq.portfolio_routes import portfolio_routes
-from backend.portiq.riskmetric_routes import riskmetric_routes
-from backend.portiq.strategy_routes import strategy_routes
-from backend.portiq.trade_routes import trade_routes
+from backend.portiq.stockposition_routes import stockposition_routes
+# from backend.portiq.riskmetric_routes import riskmetric_routes  # not built yet
+# from backend.portiq.strategy_routes import strategy_routes      # not built yet
+# from backend.portiq.trade_routes import trade_routes            # not built yet
 
 def create_app():
     app = Flask(__name__)
@@ -40,6 +44,11 @@ def create_app():
     # and give a url prefix to each.
     app.logger.info("create_app(): registering blueprints")
     app.register_blueprint(simple_routes)
-    app.register_blueprint(asset_routes, url_prefix="/assets")
+    app.register_blueprint(asset_routes, url_prefix="/asset")
+    app.register_blueprint(analystrating_routes, url_prefix="/AnalystRating")
+    app.register_blueprint(benchmark_routes, url_prefix="/benchmark")
+    app.register_blueprint(chatsession_routes, url_prefix="/ChatSession")
+    app.register_blueprint(dailysummary_routes, url_prefix="/DailySummary")
     app.register_blueprint(portfolio_routes, url_prefix="/portfolio")
+    app.register_blueprint(stockposition_routes, url_prefix="/StockPosition")
     return app
