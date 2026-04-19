@@ -65,17 +65,14 @@ def classification_nav():
         "pages/13_Classification.py", label="Classification Demo", icon="🌺"
     )
 
+# ---- Role: CIO --------------------------------------------------------------
 
-# ---- Role: administrator ----------------------------------------------------
-
-def admin_home_nav():
-    st.sidebar.page_link("pages/20_Admin_Home.py", label="System Admin", icon="🖥️")
+def cio_iam_nav():
+    st.sidebar.page_link("pages/20_CIO_IAM.py", label="IAM", icon="🔐")
 
 
-def ml_model_mgmt_nav():
-    st.sidebar.page_link(
-        "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🏢"
-    )
+def cio_logs_nav():
+    st.sidebar.page_link("pages/21_CIO_Logs.py", label="Logs", icon="📋")
 
 
 # ---- Sidebar assembly -------------------------------------------------------
@@ -125,13 +122,10 @@ def SideBarLinks(show_home=False):
             api_test_nav()
             classification_nav()
 
-        if st.session_state["role"] == "CIO":
-            admin_home_nav()
-            ml_model_mgmt_nav()
-        if st.session_state["role"] == "beginner_user":
-            admin_home_nav()
-            ml_model_mgmt_nav()
 
+        if st.session_state["role"] == "CIO":
+            cio_iam_nav()
+            cio_logs_nav()
 
     # About link appears at the bottom for all roles
     about_page_nav()
