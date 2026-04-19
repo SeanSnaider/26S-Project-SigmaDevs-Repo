@@ -168,7 +168,7 @@ CREATE TABLE if not exists StockPosition(
 CREATE TABLE if not exists Asset(
     asset_type VARCHAR(50),
     ticker VARCHAR(50),
-    total_merket FLOAT,
+    total_market FLOAT,
     asset_name VARCHAR(50),
     exchange VARCHAR(50),
     asset_id INT PRIMARY KEY,

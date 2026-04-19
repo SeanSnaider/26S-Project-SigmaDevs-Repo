@@ -14,7 +14,7 @@ def get_all_users_role():
     cursor = get_db().cursor(dictionary=True)
     try:
         cursor.execute(
-            """SELECT u.username as 'usernames', r.name as 'role names'
+            """SELECT u.username as 'usernames', r.name as 'role names', r.RoleID as 'role id'
                FROM Users AS u
                JOIN Role AS r ON u.userID = r.user_id""")
         user_roles_list = cursor.fetchall()
