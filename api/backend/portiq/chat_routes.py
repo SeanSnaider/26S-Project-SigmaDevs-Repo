@@ -15,6 +15,7 @@ def chat():
 
     data = request.get_json()
     message = data.get("message", "")
+    history = data.get("history", [])
     if not message:
         return jsonify({"error": "Missing message"}), 400
 
@@ -41,16 +42,27 @@ def chat():
         for p in positions
     ]) or "No positions found."
 
-    system_prompt = (
-        f"You are a helpful financial assistant for Jane Doe, a beginner investor. "
-        f"Her current portfolio positions are:\n{pos_lines}\n\n"
-        f"Answer in simple, beginner-friendly language. Keep responses concise."
-    )
+    # system context injected as first exchange so it persists across turns
+    system_history = [
+        {
+            "role": "user",
+            "parts": [
+                f"You are a helpful financial assistant for Jane Doe, a beginner investor. "
+                f"Her current portfolio positions are:\n{pos_lines}\n\n"
+                f"Answer in simple, beginner-friendly language. Keep responses concise."
+            ]
+        },
+        {
+            "role": "model",
+            "parts": ["Got it! I'm ready to help Jane with her portfolio questions."]
+        }
+    ]
 
     try:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-2.5-flash")
-        response = model.generate_content(f"{system_prompt}\n\nJane asks: {message}")
+        chat_session = model.start_chat(history=system_history + history)
+        response = chat_session.send_message(message)
         return jsonify({"response": response.text}), 200
     except Exception as e:
         current_app.logger.error(f"Gemini error: {e}")

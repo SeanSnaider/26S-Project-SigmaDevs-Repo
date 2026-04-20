@@ -1,3 +1,5 @@
+# Based on: https://medium.com/@gayathri.s.de/building-a-chatbot-using-gemini-api-and-streamlit-34292b38fc57
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -12,23 +14,36 @@ st.title("Portfolio Assistant")
 st.write(f"### Hi, {st.session_state['first_name']}.")
 st.write("Ask me anything about your portfolio and investments.")
 
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
 
-for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
+def map_role(role):
+    return "assistant" if role == "model" else role
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for msg in st.session_state.messages:
+    with st.chat_message(map_role(msg["role"])):
         st.markdown(msg["content"])
 
 prompt = st.chat_input("Ask about your positions...")
 
 if prompt:
-    st.session_state.chat_history.append({"role": "user", "content": prompt})
+    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    history = [
+        {"role": m["role"], "parts": [m["content"]]}
+        for m in st.session_state.messages[:-1]
+    ]
+
     with st.chat_message("assistant"):
         try:
-            res = requests.post("http://web-api:4000/chat/", json={"message": prompt})
+            res = requests.post(
+                "http://web-api:4000/chat/",
+                json={"message": prompt, "history": history}
+            )
             data = res.json()
             if res.status_code == 503:
                 reply = "API key not connected. Add your GEMINI_API_KEY to api/.env and restart the container."
@@ -41,4 +56,4 @@ if prompt:
             reply = "Failed to connect to the assistant."
 
         st.markdown(reply)
-        st.session_state.chat_history.append({"role": "assistant", "content": reply})
+        st.session_state.messages.append({"role": "model", "content": reply})
