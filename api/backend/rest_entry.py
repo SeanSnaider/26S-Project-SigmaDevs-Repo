@@ -4,17 +4,21 @@ import os
 import logging
 
 from backend.db_connection import init_app as init_db
-from backend.simple.simple_routes import simple_routes
+
+from backend.users.users_routes import users
+from backend.roles.roles_routes import roles
+from backend.actions.actions_routes import actions
 from backend.portiq.asset_routes import asset_routes
 from backend.portiq.ratings_routes import analystrating_routes
 from backend.portiq.benchmark_routes import benchmark_routes
 from backend.portiq.chatsession_routes import chatsession_routes
 from backend.portiq.dailysummary_routes import dailysummary_routes
 from backend.portiq.portfolio_routes import portfolio_routes
+from backend.portiq.riskmetric_routes import riskmetric_routes
 from backend.portiq.stockposition_routes import stockposition_routes
-# from backend.portiq.riskmetric_routes import riskmetric_routes  # not built yet
-# from backend.portiq.strategy_routes import strategy_routes      # not built yet
-# from backend.portiq.trade_routes import trade_routes            # not built yet
+from backend.portiq.strategy_routes import strategy_routes
+from backend.portiq.trade_routes import trade_routes
+
 
 def create_app():
     app = Flask(__name__)
@@ -43,12 +47,17 @@ def create_app():
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each.
     app.logger.info("create_app(): registering blueprints")
-    app.register_blueprint(simple_routes)
+    app.register_blueprint(users, url_prefix="/user")
+    app.register_blueprint(roles, url_prefix="/role")
+    app.register_blueprint(actions, url_prefix="/action")
     app.register_blueprint(asset_routes, url_prefix="/asset")
     app.register_blueprint(analystrating_routes, url_prefix="/AnalystRating")
     app.register_blueprint(benchmark_routes, url_prefix="/benchmark")
     app.register_blueprint(chatsession_routes, url_prefix="/ChatSession")
     app.register_blueprint(dailysummary_routes, url_prefix="/DailySummary")
-    app.register_blueprint(portfolio_routes, url_prefix="/portfolio")
+    app.register_blueprint(portfolio_routes, url_prefix="/portfolios")
+    app.register_blueprint(riskmetric_routes, url_prefix="/riskmetrics")
     app.register_blueprint(stockposition_routes, url_prefix="/StockPosition")
+    app.register_blueprint(strategy_routes, url_prefix="/strategies")
+    app.register_blueprint(trade_routes, url_prefix="/trades")
     return app

@@ -250,7 +250,7 @@ portfolio_routes = Blueprint("portfolio_routes", __name__)
 
 
 # GETs all portifolios for that user
-@portfolio_routes.route("/<int:user_id>",methods=["GET"])
+@portfolio_routes.route("/user/<int:user_id>",methods=["GET"])
 def GetAllPortifolios(user_id):
   cursor = get_db().cursor(dictionary=True)
   try:
@@ -267,7 +267,7 @@ def GetAllPortifolios(user_id):
 
 
 # GETs one specific portifolio
-@portfolio_routes.route("/<int:user_id>/<int:portifolio_id>",methods=["GET"])
+@portfolio_routes.route("/user/<int:user_id>/<int:portifolio_id>",methods=["GET"])
 def GetPortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
@@ -291,7 +291,7 @@ def GetPortifolio(user_id, portifolio_id):
 
 
 # POST, create a new portifolio for that user and requrires: portfolio_name, created_at, total_value, confidence, currency
-@portfolio_routes.route("/<int:user_id>/<int:portifolio_id>",methods=["POST"])
+@portfolio_routes.route("/user/<int:user_id>/<int:portifolio_id>",methods=["POST"])
 def CreatePortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
@@ -328,7 +328,7 @@ def CreatePortifolio(user_id, portifolio_id):
 
 
 # PUT update the portifolio of the user
-@portfolio_routes.route("/<int:user_id>/<int:portifolio_id>",methods=["PUT"])
+@portfolio_routes.route("/user/<int:user_id>/<int:portifolio_id>",methods=["PUT"])
 def UpdatePortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
@@ -364,7 +364,7 @@ def UpdatePortifolio(user_id, portifolio_id):
 
 
 # DELETE hard delete a portiflio of a user
-@portfolio_routes.route("/<int:user_id>/<int:portifolio_id>",methods=["DELETE"])
+@portfolio_routes.route("/user/<int:user_id>/<int:portifolio_id>",methods=["DELETE"])
 def DeletePortifolio(user_id, portifolio_id):
   cursor = get_db().cursor(dictionary=True)
   try:
@@ -390,3 +390,57 @@ def DeletePortifolio(user_id, portifolio_id):
     return jsonify(str(e)), 500
   finally:
     cursor.close()
+
+
+# GET /portfolios
+# Return all portfolios
+@portfolio_routes.route("/", methods=["GET"])
+def get_all_portfolios():
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info('GET /portfolios')
+
+        query = """
+                SELECT portfolio_id, portfolio_name, created_at, total_value, confidence, currency, user_id
+                FROM Portfolio
+                """
+        cursor.execute(query)
+        portfolios = cursor.fetchall()
+        return jsonify(portfolios), 200
+    except Error as e:
+        current_app.logger.error(f'Database error in get_all_portfolios: {e}')
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+
+
+# GET /portfolios/<portfolio_id>
+# Returns one portfolio with current value and P&L summary
+@portfolio_routes.route("/<int:portfolio_id>", methods=["GET"])
+def get_portfolio(portfolio_id):
+    cursor = get_db().cursor(dictionary=True)
+    try:
+        current_app.logger.info(f"GET /portfolios/{portfolio_id}")
+
+        query = """
+                SELECT p.portfolio_id, p.portfolio_name, p.total_value, p.confidence, p.currency,
+                SUM(pr.daily_PNL) AS total_daily_PNL,
+                SUM(pr.cumulative_PNL) AS total_cumulative_PNL
+                FROM Portfolio p
+                LEFT JOIN Strategy s
+                    ON p.portfolio_id = s.port_strat
+                LEFT JOIN PerformanceRecord pr
+                    ON s.strategy_id = pr.strat_perf
+                WHERE p.portfolio_id = %s
+                GROUP BY p.portfolio_id, p.portfolio_name, p.total_value, p.confidence, p.currency
+                """
+        cursor.execute(query, (portfolio_id,))
+        portfolio = cursor.fetchone()
+        if not portfolio:
+            return jsonify({"error": "Portfolio not found"}), 404
+        return jsonify(portfolio), 200
+    except Error as e:
+        current_app.logger.error(f"Database error in get_portfolio: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()

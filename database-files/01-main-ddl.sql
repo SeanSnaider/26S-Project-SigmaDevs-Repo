@@ -9,8 +9,9 @@ CREATE TABLE if not exists Users(
     last_name varchar(100),
     username varchar (50) NOT NULL Unique,
     email varchar (50) NOT NULL Unique,
-    passwordHash varchar (128) NOT NULL,
+    passwordHash VARBINARY(256) NOT NULL,
     birth_date DATETIME,
+    is_encrypted BOOLEAN NOT NULL default false,
     userID int PRIMARY KEY
 );
 CREATE unique index idx_email on Users(email);
@@ -22,7 +23,8 @@ CREATE Table if not exists DailySummary (
     summaryId int PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_summary
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+        FOREIGN KEY (user_id) REFERENCES Users(userID) 
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Action (
@@ -31,15 +33,15 @@ CREATE TABLE if not exists Action (
     action_id INT PRIMARY KEY,
     user_id int NOT NULL,
     CONSTRAINT user_action
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+                          FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Role (
     name VARCHAR(50),
-    RoleID INT PRIMARY KEY,
+    RoleID INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_role
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+                          FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Permission (
@@ -50,7 +52,8 @@ CREATE TABLE if not exists Permission (
     permission_id INT PRIMARY KEY,
     role_id INT NOT NULL,
     CONSTRAINT role_permission
-                          FOREIGN KEY (role_id) REFERENCES Role(RoleID)
+        FOREIGN KEY (role_id) REFERENCES Role(RoleID)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Customer (
@@ -59,6 +62,7 @@ CREATE TABLE if not exists Customer (
     role_id INT NOT NULL,
     CONSTRAINT role_customers
                           FOREIGN KEY (role_id) REFERENCES Role(RoleID)
+                          ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists ChatSession (
@@ -67,7 +71,7 @@ CREATE TABLE if not exists ChatSession (
     session_id INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_session
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+                          FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Dataset(
@@ -76,7 +80,7 @@ CREATE TABLE if not exists Dataset(
     dataset_id INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_dataset
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+                          FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 
@@ -87,7 +91,8 @@ CREATE TABLE if not exists DataCleaningMethod(
     method_id INT PRIMARY KEY,
     CleaningDataSet INT NOT NULL ,
     CONSTRAINT dataset_clean
-                          FOREIGN KEY (CleaningDataSet) REFERENCES Dataset(dataset_id)
+        FOREIGN KEY (CleaningDataSet) REFERENCES Dataset(dataset_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Visualization(
@@ -96,7 +101,8 @@ CREATE TABLE if not exists Visualization(
     visualization_id INT PRIMARY KEY,
     VizDataSet INT NOT NULL ,
     CONSTRAINT viz_dataset
-                          FOREIGN KEY (VizDataSet) REFERENCES Dataset(dataset_id)
+        FOREIGN KEY (VizDataSet) REFERENCES Dataset(dataset_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists DashBoard(
@@ -105,7 +111,8 @@ CREATE TABLE if not exists DashBoard(
     dashboard_id INT PRIMARY KEY,
     VizDash INT NOT NULL ,
     CONSTRAINT viz_dashboard
-                          FOREIGN KEY (VizDash) REFERENCES Visualization(visualization_id)
+        FOREIGN KEY (VizDash) REFERENCES Visualization(visualization_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists DashboardLayout(
@@ -114,7 +121,8 @@ CREATE TABLE if not exists DashboardLayout(
     layout_id INT PRIMARY KEY,
     layout_dash INT NOT NULL,
     CONSTRAINT layout_dashboard
-                          FOREIGN KEY (layout_dash) REFERENCES DashBoard(dashboard_id)
+        FOREIGN KEY (layout_dash) REFERENCES DashBoard(dashboard_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Portfolio(
@@ -126,7 +134,7 @@ CREATE TABLE if not exists Portfolio(
     portfolio_id INT PRIMARY KEY,
     user_id int NOT NULL,
     CONSTRAINT user_port
-                          FOREIGN KEY (user_id) REFERENCES Users(userID)
+        FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 
@@ -139,7 +147,8 @@ CREATE TABLE if not exists PortfolioSnapshot (
     SessionID int NOT NULL UNIQUE,
     port_id INT NOT NULL,
     CONSTRAINT port_snap
-                          FOREIGN KEY (port_id) REFERENCES Portfolio(portfolio_id)
+            FOREIGN KEY (port_id) REFERENCES Portfolio(portfolio_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists StockPosition(
@@ -152,7 +161,8 @@ CREATE TABLE if not exists StockPosition(
     position_id INT PRIMARY KEY,
     port_id INT NOT NULL,
     CONSTRAINT prot_pos
-                          FOREIGN KEY (port_id) REFERENCES Portfolio(portfolio_id)
+        FOREIGN KEY (port_id) REFERENCES Portfolio(portfolio_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Asset(
@@ -164,7 +174,8 @@ CREATE TABLE if not exists Asset(
     asset_id INT PRIMARY KEY,
     pos_id INT UNIQUE,
     CONSTRAINT pos_asset
-                          FOREIGN KEY (pos_id) REFERENCES StockPosition(position_id)
+        FOREIGN KEY (pos_id) REFERENCES StockPosition(position_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists AnalystRating(
@@ -174,7 +185,8 @@ CREATE TABLE if not exists AnalystRating(
     rate_id INT PRIMARY KEY,
     asset_rating INT NOT NULL,
     CONSTRAINT assetanalyst
-                          FOREIGN KEY (asset_rating) REFERENCES Asset(asset_id)
+        FOREIGN KEY (asset_rating) REFERENCES Asset(asset_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Trade (
@@ -185,7 +197,8 @@ CREATE TABLE if not exists Trade (
     trade_id INT PRIMARY KEY,
     trade_asset INT NOT NULL,
     CONSTRAINT trade_asset
-                   FOREIGN KEY (trade_asset) REFERENCES Asset(asset_id)
+        FOREIGN KEY (trade_asset) REFERENCES Asset(asset_id)
+        ON DELETE CASCADE
 );
 
 Create Table if not exists Strategy(
@@ -196,11 +209,13 @@ Create Table if not exists Strategy(
     status VARCHAR(50),
     strategy_id INT PRIMARY KEY,
     trade_strat INT NOT NULL,
+       CONSTRAINT trade_strat
+        FOREIGN KEY (trade_strat) REFERENCES Trade(trade_id)
+        ON DELETE CASCADE,
     port_strat INT NOT NULL,
-    CONSTRAINT trade_strat
-                   FOREIGN KEY (trade_strat) REFERENCES Trade(trade_id) ,
     CONSTRAINT port_strat
-                   FOREIGN KEY (port_strat) REFERENCES Portfolio(portfolio_id)
+        FOREIGN KEY (port_strat) REFERENCES Portfolio(portfolio_id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists RiskMetric(
@@ -212,6 +227,7 @@ CREATE TABLE if not exists RiskMetric(
     risk_strat INT NOT NULL,
     CONSTRAINT risk_strat
                        FOREIGN KEY (risk_strat) REFERENCES Strategy(strategy_id)
+                       ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists PerformanceRecord(
@@ -223,6 +239,7 @@ CREATE TABLE if not exists PerformanceRecord(
     strat_perf INT NOT NULL,
     CONSTRAINT strat_perf
                        FOREIGN KEY (strat_perf) REFERENCES Strategy(strategy_id)
+                       ON DELETE CASCADE
 );
 
 CREATE TABLE if not exists Benchmark(
@@ -236,4 +253,5 @@ CREATE TABLE if not exists Benchmark(
     strat_bench INT NOT NULL,
     CONSTRAINT strat_bench
                        FOREIGN KEY (strat_bench) REFERENCES Strategy(strategy_id)
+                       ON DELETE CASCADE
 );
