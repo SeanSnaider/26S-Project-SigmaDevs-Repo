@@ -18,6 +18,11 @@ from backend.portiq.riskmetric_routes import riskmetric_routes
 from backend.portiq.stockposition_routes import stockposition_routes
 from backend.portiq.strategy_routes import strategy_routes
 from backend.portiq.trade_routes import trade_routes
+from backend.portiq.johndata_api_calls.dataset_routes import dataset_routes
+from backend.portiq.johndata_api_calls.dashboardlayout_routes import dashboardlayout_routes
+from backend.portiq.johndata_api_calls.datacleaning_routes import datacleaning_routes
+from backend.portiq.johndata_api_calls.visualization_routes import visualization_routes
+
 
 
 def create_app():
@@ -60,4 +65,9 @@ def create_app():
     app.register_blueprint(stockposition_routes, url_prefix="/StockPosition")
     app.register_blueprint(strategy_routes, url_prefix="/strategies")
     app.register_blueprint(trade_routes, url_prefix="/trades")
+    app.register_blueprint(dataset_routes, url_prefix="/datasets")
+    app.register_blueprint(dashboardlayout_routes, url_prefix="/dashboardlayouts")
+    app.register_blueprint(datacleaning_routes, url_prefix="/datacleaningmethods")
+    app.register_blueprint(visualization_routes, url_prefix="/visualizations")
+    
     return app
