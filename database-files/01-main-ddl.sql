@@ -20,7 +20,7 @@ CREATE Table if not exists DailySummary (
     generated_at DATETIME,
     summary_date DATETIME,
     summary TEXT,
-    summaryId int PRIMARY KEY,
+    summaryId int PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_summary
         FOREIGN KEY (user_id) REFERENCES Users(userID) 
@@ -67,8 +67,8 @@ CREATE TABLE if not exists Customer (
 
 CREATE TABLE if not exists ChatSession (
     status VARCHAR(50),
-    messages TEXT,
-    session_id INT PRIMARY KEY,
+    messages LONGTEXT,
+    session_id INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_session
                           FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
