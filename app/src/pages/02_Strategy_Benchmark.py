@@ -14,11 +14,15 @@ st.header("Strategy vs Benchmark")
 
 st.write(f"### Hi, {st.session_state['first_name']}.")
 
-strategy_options={
-    "16001 - Tech Momentum": 16001,
-    "16002 - Mean Reversion": 16002,
-    "16003 - AI Growth Rotation": 16003,
-    "16004 - Legacy ETF Hedge": 16004,
+all_strategies_res = requests.get("http://web-api:4000/strategies/")
+if all_strategies_res.status_code != 200:
+    st.error("Failed to load strategies.")
+    st.stop()
+
+all_strategies = all_strategies_res.json()
+strategy_options = {
+    f"{s['strategy_id']} - {s['strategy_name']}": s['strategy_id']
+    for s in all_strategies
 }
 
 selected_strategy = st.selectbox(
@@ -56,9 +60,9 @@ col3.metric('Status:', strategy['status'])
 st.divider()
 
 st.subheader("Performance")
-perf_df =pd.DataFrame(performance)
-
-if performance_res.status_code==200 and len(perf_df) >0:
+latest_perf = None
+if performance_res.status_code == 200 and isinstance(performance, list) and len(performance) > 0:
+    perf_df = pd.DataFrame(performance)
     latest_perf = perf_df.iloc[0]
     col1,col2,col3 = st.columns(3)
     col1.metric("Portfolio Value:", f"${latest_perf['port_value']:,.2f}")
@@ -79,9 +83,9 @@ else:
 st.divider()
 
 st.subheader("Benchmark Overview")
-bench_df = pd.DataFrame(benchmark)
-
-if benchmark_res.status_code==200 and len(bench_df)>0:
+latest_bench = None
+if benchmark_res.status_code == 200 and isinstance(benchmark, list) and len(benchmark) > 0:
+    bench_df = pd.DataFrame(benchmark)
     latest_bench = bench_df.iloc[0]
     col1,col2,col3=st.columns(3)
     col1.markdown("Benchmark:")
@@ -98,30 +102,30 @@ st.divider()
 
 
 st.subheader("Comparison Summary")
-compare_df = pd.DataFrame({
-    "Measure": [
+compare_measures = [
     "Strategy Name",
     "Strategy Type",
     "Strategy Status",
     "Portfolio Value",
     "Daily P&L",
     "Cumulative P&L",
-    "Benchmark Name",
-    "Benchmark Ticker",
-    "Benchmark value"
-    ],
-    "Value":[
-        strategy["strategy_name"],
-        strategy["strategy_type"],
-        strategy["status"],
-        f"${latest_perf['port_value']:,.2f}",
-        f"${latest_perf['daily_PNL']:,.2f}",
-        f"${latest_perf['cumulative_PNL']:,.2f}",
+]
+compare_values = [
+    strategy["strategy_name"],
+    strategy["strategy_type"],
+    strategy["status"],
+    f"${latest_perf['port_value']:,.2f}" if latest_perf is not None else "N/A",
+    f"${latest_perf['daily_PNL']:,.2f}" if latest_perf is not None else "N/A",
+    f"${latest_perf['cumulative_PNL']:,.2f}" if latest_perf is not None else "N/A",
+]
+if latest_bench is not None:
+    compare_measures += ["Benchmark Name", "Benchmark Ticker", "Benchmark Value"]
+    compare_values += [
         latest_bench["benchmark_name"],
         latest_bench["ticker"],
-        f"${float(latest_bench['current_value']):,.2f}"
+        f"${float(latest_bench['current_value']):,.2f}",
     ]
-})
+compare_df = pd.DataFrame({"Measure": compare_measures, "Value": compare_values})
 
 st.dataframe(compare_df, use_container_width=True,hide_index=True)
 
