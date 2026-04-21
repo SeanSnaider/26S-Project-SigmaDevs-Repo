@@ -36,45 +36,42 @@ logger.info("Loading the Home page of the app")
 st.title('PortIQ')
 st.write('#### Hi! As which user would you like to log in?')
 
-# For each of the user personas for which we are implementing
-# functionality, we put a button on the screen that the user
-# can click to MIMIC logging in as that mock user.
+personas = [
+    "Andrew Rock - Quantitative Trader",
+    "John Data - Data Analyst",
+    "Katrina Williams - Chief Information Officer",
+    "Jane Doe - Beginner Investor",
+]
 
-if st.button("Act as Andrew Rock, a Quantitative Trader",
-             type='primary',
-             use_container_width=True):
-    # when user clicks the button, they are now considered authenticated
-    st.session_state['authenticated'] = True
-    # we set the role of the current user
-    st.session_state['role'] = 'quant_trader'
-    # we add the first name of the user (so it can be displayed on
-    # subsequent pages).
-    st.session_state['first_name'] = 'Andrew'
-    # finally, we ask streamlit to switch to another page, in this case, the
-    # landing page for this particular user type
-    logger.info("Logging in as Quantitative Trader Persona")
-    st.switch_page('pages/00_Quant_Trader_Home.py')
+persona_map = {
+    "Andrew Rock - Quantitative Trader": {
+        "role": "quant_trader",
+        "first_name": "Andrew",
+        "page": "pages/00_Quant_Trader_Home.py",
+    },
+    "John Data - Data Analyst": {
+        "role": "data_analyst",
+        "first_name": "John",
+        "page": "pages/10_Data_Analyst_Home.py",
+    },
+    "Katrina Williams - Chief Information Officer": {
+        "role": "CIO",
+        "first_name": "Katrina",
+        "page": "pages/20_CIO_IAM.py",
+    },
+    "Jane Doe - Beginner Investor": {
+        "role": "beginner_user",
+        "first_name": "Jane",
+        "page": "pages/40_Beginner_User_Home.py",
+    },
+}
 
-if st.button('Act as John Data, a Data Analyst',
-             type='primary',
-             use_container_width=True):
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'data_analyst'
-    st.session_state['first_name'] = 'John'
-    st.switch_page('pages/10_Data_Analyst_Home.py')
+selected = st.selectbox("Select a persona", personas)
 
-if st.button('Act as Katrina Williams, a Chief Information Officer',
-             type='primary',
-             use_container_width=True):
+if st.button("Log In", type="primary", use_container_width=True):
+    user = persona_map[selected]
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'CIO'
-    st.session_state['first_name'] = 'Katrina'
-    st.switch_page('pages/20_CIO_IAM.py')
-
-if st.button('Act as Jane Doe, a average user interested in beginning to learn about markets and trading',
-             type='primary',
-             use_container_width=True):
-    st.session_state['authenticated'] = True
-    st.session_state['role'] = 'beginner_user'
-    st.session_state['first_name'] = 'Jane'
-    st.switch_page('pages/40_Beginner_User_Home.py')
+    st.session_state['role'] = user["role"]
+    st.session_state['first_name'] = user["first_name"]
+    logger.info(f"Logging in as {selected}")
+    st.switch_page(user["page"])
