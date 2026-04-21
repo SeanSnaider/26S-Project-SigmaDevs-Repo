@@ -47,7 +47,7 @@ def chat():
         {
             "role": "user",
             "parts": [
-                f"You are a helpful financial assistant for Jane Doe, a beginner investor. "
+                f"You are a helpful financial assistant for a beginner investor. "
                 f"Her current portfolio positions are:\n{pos_lines}\n\n"
                 f"Answer in simple, beginner-friendly language. Keep responses concise."
             ]
