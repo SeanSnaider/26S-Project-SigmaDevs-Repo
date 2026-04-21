@@ -70,7 +70,7 @@ if st.button('Act as Katrina Williams, a Chief Information Officer',
     st.session_state['role'] = 'CIO'
     st.session_state['first_name'] = 'Katrina'
     st.session_state['user_id'] = 3
-    st.switch_page('pages/20_CIO_IAM.py')
+    st.switch_page('pages/23_CIO_Home.py')
 
 if st.button('Act as Jane Doe, a average user interested in beginning to learn about markets and trading',
              type='primary',
