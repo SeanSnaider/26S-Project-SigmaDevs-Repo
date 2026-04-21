@@ -22,7 +22,7 @@ try:
     if response.status_code == 200: # success
         users_data = response.json()
         if search_name:
-            users_data = [u for u in users_data if search_name.lower() in u.get("username", "").lower()] # linear search
+            users_data = [u for u in users_data if search_name.lower() in u.get("usernames", "").lower()] # linear search
         st.dataframe(users_data, use_container_width=True) # make a table
     else:
         st.warning("No users found.") # no users error
@@ -79,3 +79,5 @@ with st.form("add_permission_form"): # Add permission to specified role
                 st.error(f"Error: {post_resp.json().get('error', 'Unknown error')}") # Permission unkown
         except Exception as e:
             st.error(f"Request failed: {e}") # api failed
+            
+        

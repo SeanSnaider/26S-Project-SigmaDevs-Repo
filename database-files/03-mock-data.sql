@@ -85,8 +85,18 @@ VALUES
 
 INSERT INTO ChatSession (status, messages, session_id, user_id)
 VALUES
-('active', 'What moved my portfolio today?', 5001, 4),
-('closed', 'Show me current portfolio P&L.', 5002, 1);
+('active',  'What moved my portfolio today?', 5001, 4),
+('closed',  'Show me current portfolio P&L.', 5002, 1),
+('closed',  'Summarize the recent portfolio risk exposure for Q1.', 5003, 3),
+('closed',  'Are there any anomalies in the recent trade logs?', 5004, 3),
+('closed',  'What permissions does the Data Analyst role currently have?', 5005, 3),
+('closed',  'Which users have create permissions across all roles?', 5006, 3),
+('closed',  'Generate a brief security audit summary for April.', 5007, 3),
+('closed',  'What is the current total portfolio value across all users?', 5008, 3),
+('closed',  'Identify any strategies with negative daily PNL.', 5009, 3),
+('closed',  'Summarize system activity for April 10.', 5010, 3),
+('closed',  'What datasets are currently managed by the Data Analyst?', 5011, 3),
+('active',  'Are there any high-risk strategies that should be reviewed?', 5012, 3);
 
 -- =========================================================
 -- 3. JOHN DATA: DATASETS / CLEANING / VISUALIZATION / LAYOUT

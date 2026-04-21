@@ -14,6 +14,7 @@ from backend.portiq.portfolio_routes import portfolio_routes
 from backend.portiq.riskmetric_routes import riskmetric_routes
 from backend.portiq.strategy_routes import strategy_routes
 from backend.portiq.trade_routes import trade_routes
+from backend.llm.llm_routes import llm
 
 
 def create_app():
@@ -52,5 +53,6 @@ def create_app():
     app.register_blueprint(riskmetric_routes, url_prefix="/riskmetrics")
     app.register_blueprint(strategy_routes, url_prefix="/strategies")
     app.register_blueprint(trade_routes, url_prefix="/trades")
-    
+    app.register_blueprint(llm, url_prefix="/llm")
+
     return app
