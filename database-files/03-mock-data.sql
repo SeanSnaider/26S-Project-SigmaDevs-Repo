@@ -23,6 +23,7 @@ DELETE FROM Action;
 DELETE FROM DailySummary;
 DELETE FROM Users;
 SET FOREIGN_KEY_CHECKS = 1;
+
 INSERT INTO Users (userID, first_name, last_name, username, email, passwordHash, birth_date) VALUES
   (1, 'Andrew', 'Rock', 'andrewrock', 'andrew.rock@portiq.com', 'hashed_pw_1', '1993-06-15 00:00:00'),
   (2, 'John', 'Data', 'johndata', 'john.data@portiq.com', 'hashed_pw_2', '1980-03-12 00:00:00'),

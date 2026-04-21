@@ -83,6 +83,10 @@ def cio_logs_nav():
     st.sidebar.page_link("pages/21_CIO_Logs.py", label="Logs", icon="📋")
 
 
+def cio_llm_nav():
+    st.sidebar.page_link("pages/22_CIO_LLM_Mgmt.py", label="LLM Management", icon="🤖")
+
+
 # ---- Sidebar assembly -------------------------------------------------------
 
 def SideBarLinks(show_home=False):
@@ -160,6 +164,7 @@ def SideBarLinks(show_home=False):
         if st.session_state["role"] == "CIO":
             cio_iam_nav()
             cio_logs_nav()
+            cio_llm_nav()
 
     # About link appears at the bottom for all roles
     about_page_nav()
