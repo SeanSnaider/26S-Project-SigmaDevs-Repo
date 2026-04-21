@@ -34,11 +34,11 @@ def map_demo_nav():
     st.sidebar.page_link("pages/02_Map_Demo.py", label="Map Demonstration", icon="🗺️")
 
 
-# ---- Role: usaid_worker -----------------------------------------------------
+# ---- Role: data_analyst -----------------------------------------------------
 
-def usaid_worker_home_nav():
+def data_analyst_home_nav():
     st.sidebar.page_link(
-        "pages/10_USAID_Worker_Home.py", label="USAID Worker Home", icon="🏠"
+        "pages/10_Data_Analyst_Home.py", label="Data Analyst Home", icon="👤"
     )
 
 
@@ -64,6 +64,14 @@ def classification_nav():
     st.sidebar.page_link(
         "pages/13_Classification.py", label="Classification Demo", icon="🌺"
     )
+
+# ---- Role: beginner_user ----------------------------------------------------
+
+def beginner_user_home_nav():
+    st.sidebar.page_link(
+        "pages/40_Beginner_User_Home.py", label="Beginner User Home", icon="👤"
+    )
+
 
 # ---- Role: CIO --------------------------------------------------------------
 
@@ -119,13 +127,39 @@ def SideBarLinks(show_home=False):
                 label="Trading Logs"
             )
         if st.session_state["role"] == "data_analyst":
-            usaid_worker_home_nav()
-            ngo_directory_nav()
-            add_ngo_nav()
-            prediction_nav()
-            api_test_nav()
-            classification_nav()
+            data_analyst_home_nav()
+            st.sidebar.page_link(
+                "pages/11_Dashboard_Layouts.py",
+                label="Dashboard Layouts"
+            )
+            st.sidebar.page_link(
+                "pages/12_Data_Cleaning.py",
+                label="Data Cleaning"
+            )
+            st.sidebar.page_link(
+                "pages/13_Datasets.py",
+                label="Datasets"
+            )
+            st.sidebar.page_link(
+                "pages/14_Visualizations.py",
+                label="Visualizations"
+            )
 
+
+        if st.session_state["role"] == "beginner_user":
+            beginner_user_home_nav()
+            st.sidebar.page_link(
+                "pages/41_Positions.py",
+                label="Positions"
+            )
+            st.sidebar.page_link(
+                "pages/42_Dashboard.py",
+                label="Dashboard"
+            )
+            st.sidebar.page_link(
+                "pages/43_Chat.py",
+                label="Portfolio Assistant"
+            )
 
         if st.session_state["role"] == "CIO":
             cio_iam_nav()
