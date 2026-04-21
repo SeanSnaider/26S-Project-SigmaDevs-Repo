@@ -65,6 +65,14 @@ def classification_nav():
         "pages/13_Classification.py", label="Classification Demo", icon="🌺"
     )
 
+# ---- Role: beginner_user ----------------------------------------------------
+
+def beginner_user_home_nav():
+    st.sidebar.page_link(
+        "pages/40_Beginner_User_Home.py", label="Beginner User Home", icon="👤"
+    )
+
+
 # ---- Role: CIO --------------------------------------------------------------
 
 def cio_iam_nav():
@@ -133,6 +141,21 @@ def SideBarLinks(show_home=False):
                 label="Visualizations"
             )
 
+
+        if st.session_state["role"] == "beginner_user":
+            beginner_user_home_nav()
+            st.sidebar.page_link(
+                "pages/41_Positions.py",
+                label="Positions"
+            )
+            st.sidebar.page_link(
+                "pages/42_Dashboard.py",
+                label="Dashboard"
+            )
+            st.sidebar.page_link(
+                "pages/43_Chat.py",
+                label="Portfolio Assistant"
+            )
 
         if st.session_state["role"] == "CIO":
             cio_iam_nav()
