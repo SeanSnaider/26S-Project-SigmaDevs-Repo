@@ -1,53 +1,47 @@
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, current_app
 from backend.db_connection import get_db
 from mysql.connector import Error
 
-# A Blueprint for Benchmark routes
+# Create a Blueprint for Benchmark routes
 benchmark_routes = Blueprint("benchmark_routes", __name__)
 
 
-# GET /benchmarks
-# Return all benchmarks
-@benchmark_routes.route("/", methods=["GET"])
-def get_all_benchmarks():
-    cursor = get_db().cursor(dictionary=True)
-    try:
-        current_app.logger.info('GET /benchmarks')
-
-        query = """
-                SELECT benchmark_id, benchmark_name, ticker, current_value, sector
-                From Benchmark
-                """
-        cursor.execute(query)
-        benchmarks = cursor.fetchall()
-        return jsonify(benchmarks), 200
-    except Error as e:
-        current_app.logger.error(f'Database error in get_all_benchmarks: {e}')
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
+# GETs all benchmarks for that strategy
+@benchmark_routes.route("/<int:strategy_id>",methods=["GET"])
+def GetAllBenchmarks(strategy_id):
+  cursor = get_db().cursor(dictionary=True)
+  try:
+    current_app.logger.info(f"GET all benchmarks for strategy")
+    cursor.execute("SELECT * FROM Benchmark WHERE strat_bench = %s",(strategy_id,))
+    benchmarks = cursor.fetchall()
+    current_app.logger.info(f"Succesfully got benchmarks for strategy")
+    return jsonify(benchmarks), 200
+  except Error as e:
+    current_app.logger.error(f"The error {e} occured while getting all benchmarks for strategy {strategy_id}")
+    return jsonify(str(e)), 500
+  finally:
+    cursor.close()
 
 
-# GET /benchmarks/<benchmark_id>
-# Returns one benchmark
-@benchmark_routes.route("/<int:benchmark_id>", methods=["GET"])
-def get_benchmark(benchmark_id):
-    cursor = get_db().cursor(dictionary=True)
-    try:
-        current_app.logger.info(f"GET /benchmarks/{benchmark_id}")
+# GETs one specific benchmark
+@benchmark_routes.route("/<int:strategy_id>/<int:benchmark_id>",methods=["GET"])
+def GetBenchmark(strategy_id, benchmark_id):
+  cursor = get_db().cursor(dictionary=True)
+  try:
+    current_app.logger.info(f"GET one benchmark from strategy")
+    cursor.execute(
+      "SELECT * FROM Benchmark WHERE strat_bench = %s AND benchmark_id = %s",
+      (strategy_id, benchmark_id),
+    )
+    benchmark = cursor.fetchone()
 
-        query = """
-                Select *
-                from Benchmark
-                where benchmark_id = %s
-                """
-        cursor.execute(query, (benchmark_id,))
-        benchmark = cursor.fetchone()
-        if not benchmark:
-            return jsonify({"error": "Benchmark not found"}), 404
-        return jsonify(benchmark), 200
-    except Error as e:
-        current_app.logger.error(f"Database error in get_benchmark: {e}")
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
+    if not benchmark:
+      return jsonify({"error": "Benchmark not found"}), 404
+
+    current_app.logger.info("Got the benchmark")
+    return jsonify(benchmark), 200
+  except Error as e:
+    current_app.logger.error(f"The error {e} occured while getting benchmark")
+    return jsonify(str(e)), 500
+  finally:
+    cursor.close()

@@ -1,4 +1,7 @@
+# the starting page for john data
+
 import logging
+
 logger = logging.getLogger(__name__)
 
 import streamlit as st
@@ -6,33 +9,27 @@ from modules.nav import SideBarLinks
 
 st.set_page_config(layout='wide')
 
-# Show appropriate sidebar links for the role of the currently logged in user
 SideBarLinks()
 
-st.title(f"Welcome Data Analyst {st.session_state['first_name']}.")
+st.title(f"Welcome Data Analyst, {st.session_state['first_name']}.")
 st.write('### What would you like to do today?')
 
-if st.button('View NGO Directory',
+if st.button('View Dashboard Layouts',
              type='primary',
              use_container_width=True):
-    st.switch_page('pages/14_NGO_Directory.py')
+    st.switch_page('pages/11_Dashboard_Layouts.py')
 
-if st.button('Add New NGO',
+if st.button('Manage Data Cleaning Methods',
              type='primary',
              use_container_width=True):
-    st.switch_page('pages/15_Add_NGO.py')
+    st.switch_page('pages/12_Data_Cleaning.py')
 
-if st.button('Predict Value Based on Regression Model',
+if st.button('Manage Datasets',
              type='primary',
              use_container_width=True):
-    st.switch_page('pages/11_Prediction.py')
+    st.switch_page('pages/13_Datasets.py')
 
-if st.button('View the Simple API Demo',
+if st.button('Manage Visualizations',
              type='primary',
              use_container_width=True):
-    st.switch_page('pages/12_API_Test.py')
-
-if st.button('View Classification Demo',
-             type='primary',
-             use_container_width=True):
-    st.switch_page('pages/13_Classification.py')
+    st.switch_page('pages/14_Visualizations.py')
