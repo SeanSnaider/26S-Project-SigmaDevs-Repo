@@ -20,7 +20,7 @@ CREATE Table if not exists DailySummary (
     generated_at DATETIME,
     summary_date DATETIME,
     summary TEXT,
-    summaryId int PRIMARY KEY,
+    summaryId int PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_summary
         FOREIGN KEY (user_id) REFERENCES Users(userID) 
@@ -67,8 +67,8 @@ CREATE TABLE if not exists Customer (
 
 CREATE TABLE if not exists ChatSession (
     status VARCHAR(50),
-    messages TEXT,
-    session_id INT PRIMARY KEY,
+    messages LONGTEXT,
+    session_id INT PRIMARY KEY auto_increment,
     user_id int NOT NULL,
     CONSTRAINT user_session
                           FOREIGN KEY (user_id) REFERENCES Users(userID) ON DELETE CASCADE
@@ -88,7 +88,7 @@ CREATE TABLE if not exists DataCleaningMethod(
     method_order INT,
     parameter TEXT,
     method_type VARCHAR(50),
-    method_id INT PRIMARY KEY,
+    method_id INT PRIMARY KEY auto_increment,
     CleaningDataSet INT NOT NULL ,
     CONSTRAINT dataset_clean
         FOREIGN KEY (CleaningDataSet) REFERENCES Dataset(dataset_id)
@@ -98,7 +98,7 @@ CREATE TABLE if not exists DataCleaningMethod(
 CREATE TABLE if not exists Visualization(
     title VARCHAR(50),
     chart_type VARCHAR(50),
-    visualization_id INT PRIMARY KEY,
+    visualization_id INT PRIMARY KEY auto_increment,
     VizDataSet INT NOT NULL ,
     CONSTRAINT viz_dataset
         FOREIGN KEY (VizDataSet) REFERENCES Dataset(dataset_id)
@@ -108,7 +108,7 @@ CREATE TABLE if not exists Visualization(
 CREATE TABLE if not exists DashBoard(
     title VARCHAR(50),
     visibility BOOLEAN,
-    dashboard_id INT PRIMARY KEY,
+    dashboard_id INT PRIMARY KEY auto_increment,
     VizDash INT NOT NULL ,
     CONSTRAINT viz_dashboard
         FOREIGN KEY (VizDash) REFERENCES Visualization(visualization_id)
@@ -118,7 +118,7 @@ CREATE TABLE if not exists DashBoard(
 CREATE TABLE if not exists DashboardLayout(
     name VARCHAR(50),
     source VARCHAR(50),
-    layout_id INT PRIMARY KEY,
+    layout_id INT PRIMARY KEY auto_increment,
     layout_dash INT NOT NULL,
     CONSTRAINT layout_dashboard
         FOREIGN KEY (layout_dash) REFERENCES DashBoard(dashboard_id)
